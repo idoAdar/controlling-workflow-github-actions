@@ -92,6 +92,8 @@ jobs:
         run: echo "Deploying..."
   report:
     # This job will run only if one the other jobs will fail
+    # notice that we have to set the needs keyword cause jobs runs parallel (In this point there is no any failure job or steps to handle)
+    needs: [lint, deploy]
     if: failure()
     runs-on: ubuntu-latest
     steps:
