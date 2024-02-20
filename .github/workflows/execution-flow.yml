@@ -5,8 +5,8 @@
 # outcome - is the result of the step (failure / success / cancelled / skipped)
 
 # Special Conditional Functions:
-# failure() - return true when any previous step failed
-# success() - return true when every single step is done successfuly
+# failure() - return true when any previous step / job failed
+# success() - return true when every single step / job done successfully
 # cancelled() - return true if the workflow has been canclled
 # always() - return true always 
 
@@ -50,11 +50,12 @@ jobs:
       - name: Upload test report
       # NOTICE: steps.run-ido-test.outcome == 'failure' alone is not sufficuent for continue the step if the last step is failed (like we want for the example) 
       # For overwritten the default behaviour of Github Action we have to add the failure() method
-        if: failure() && steps.run-ido-test.outcome == 'failure'
+        if: failure() && steps.run-ido-test.outcome == 'failure'  
         uses: actions/upload-artifact@v3
         with:
           name: test-report
           path: test.json
+          # => The result is that the file that created by 'npm run test' is upload to Github even if the tests has failed 
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -89,3 +90,12 @@ jobs:
         run: ls
       - name: Deploy
         run: echo "Deploying..."
+  report:
+    # This job will run only if one the other jobs will fail
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output info
+        run: |
+          echo "Something went worng"
+      
