@@ -1,7 +1,14 @@
 # Github action by default aborted the entire job if one step is failed.
+
 # if:steps.run-ido-test.outcome
 # steps - is a built in api for refrencing other steps in a job.
 # outcome - is the result of the step (failure / success / cancelled / skipped)
+
+# Special Conditional Functions:
+# failure() - return true when any previous step failed
+# success() - return true when every single step is done successfuly
+# cancelled() - return true if the workflow has been canclled
+# always() - return true always 
 
 name: Website Deployment
 on:
@@ -41,7 +48,9 @@ jobs:
         id: run-ido-test  # We can add id filed to any step for refrencing
         run: npm run test
       - name: Upload test report
-        if: steps.run-ido-test.outcome == 'failure'
+      # NOTICE: steps.run-ido-test.outcome == 'failure' alone is not sufficuent for continue the step if the last step is failed (like we want for the example) 
+      # For overwritten the default behaviour of Github Action we have to add the failure() method
+        if: failure() && steps.run-ido-test.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
