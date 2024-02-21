@@ -1,5 +1,7 @@
-# Github action by default aborted the entire job if one step is failed.
+# Github actions by default aborted the entire job if one step is failed.
+# We can change this behaviour by this implementation:
 
+# Conditional IF:
 # if:steps.run-ido-test.outcome
 # steps - is a built in api for refrencing other steps in a job.
 # outcome - is the result of the step (failure / success / cancelled / skipped)
@@ -45,12 +47,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Test code
-        id: run-ido-test  # We can add id filed to any step for refrencing
+        id: run-ido-test  # We can add id field to any step for refrencing
         run: npm run test
       - name: Upload test report
       # NOTICE: steps.run-ido-test.outcome == 'failure' alone is not sufficuent for continue the step if the last step is failed (like we want for the example) 
       # For overwritten the default behaviour of Github Action we have to add the failure() method
-        if: failure() && steps.run-ido-test.outcome == 'failure'  
+        if: failure() && steps.run-ido-test.outcome == 'failure'
+        # Other possible is to use:
+        # continue-on-error: true   
+        # NOTICE: In both cases, the next step will continue even if the prior step has failed.continue-on-error: 
+          # The diffreneces between these methods:
+          # 1. in the IF option - the entire JOB still consider as failed (beacuse the test failed) 
+          # 2. in the continue-on-error - the entire JOB will consider as success (even if case of failure in prior step)
         uses: actions/upload-artifact@v3
         with:
           name: test-report
