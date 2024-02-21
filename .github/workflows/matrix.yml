@@ -5,7 +5,7 @@ name: Matrix Demo
 on: push
 jobs:
     build-project:
-        # We want to continue running the matrix event if some combination leed to fail 
+        # We want to continue running the matrix even if some combination leed to fail 
         continue-on-error: true 
         strategy:
             matrix:
