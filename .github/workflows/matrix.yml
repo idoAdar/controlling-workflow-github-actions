@@ -5,6 +5,8 @@ name: Matrix Demo
 on: push
 jobs:
     build-project:
+        # We want to continue running the matrix event if some combination leed to fail 
+        continue-on-error: true 
         strategy:
             matrix:
                 node-version: [12, 14, 16]
