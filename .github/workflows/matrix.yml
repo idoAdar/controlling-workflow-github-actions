@@ -9,8 +9,13 @@ jobs:
         continue-on-error: true 
         strategy:
             matrix:
+                # Here we can set any key we want and use it everywhere in a level job
                 node-version: [12, 14, 16]
                 operation-system: [ubuntu-latest, windows-lates]
+                # Alternative, we can use specific combination like we want
+                include:
+                    - node-version: 16
+                      operation-system: windows-latest
         runs-on: ${{ matrix.operation-system }}
         steps:
             - name: Get code
